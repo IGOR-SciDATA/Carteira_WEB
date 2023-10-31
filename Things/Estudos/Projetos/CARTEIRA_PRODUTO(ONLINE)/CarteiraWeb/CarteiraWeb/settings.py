@@ -82,7 +82,7 @@ DATABASES = {
         'PORT': '3306',
         'HOST': 'carteiraweb.cfaql9cqyrlk.us-east-2.rds.amazonaws.com',
         'USER': 'admin',
-        'PASSWORD': '2DrljEXFcRkvnTuzW',
+        'PASSWORD': 'OHz14eRYMWnt5ZQUCQld',
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=InnoDB'
         }
