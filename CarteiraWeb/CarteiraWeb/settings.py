@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*','18.191.233.250','0.0.0.0','https://www.easycontrol.site/','https://easycontrol.site/']
 
+CSRF_TRUSTED_ORIGINS = ['https://easycontrol.site/','https://www.easycontrol.site/','18.191.233.250','0.0.0.0']
 
 # Application definition
 
