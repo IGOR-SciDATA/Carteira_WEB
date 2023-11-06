@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*','18.191.233.250','0.0.0.0','https://www.easycontrol.site/',
 
 CSRF_TRUSTED_ORIGINS = ['https://easycontrol.site','https://www.easycontrol.site','http://3.13.2.175','http://0.0.0.0']
 
+CSRF_COOKIE_SECURE = False
+
 # Application definition
 
 INSTALLED_APPS = [
