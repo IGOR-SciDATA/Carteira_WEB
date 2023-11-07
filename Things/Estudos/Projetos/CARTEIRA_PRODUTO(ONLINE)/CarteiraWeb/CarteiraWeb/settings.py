@@ -26,7 +26,13 @@ SECRET_KEY = 'django-insecure-ti0p44l0lxz1q8ptom032aug*f7n#_jpdgr^dfaqbr25=l0@(8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*','18.191.233.250','0.0.0.0']
+ALLOWED_HOSTS = ['*','18.191.233.250','0.0.0.0','https://www.easycontrol.site/','https://easycontrol.site/']
+
+CSRF_TRUSTED_ORIGINS = ['https://easycontrol.site','https://www.easycontrol.site','http://3.13.2.175','http://0.0.0.0']
+
+CSRF_COOKIE_SECURE = False
+
+SESSION_COOKIE_SECURE = False
 
 
 # Application definition
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'CarteiraApp',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +89,7 @@ DATABASES = {
         'PORT': '3306',
         'HOST': 'carteiraweb.cfaql9cqyrlk.us-east-2.rds.amazonaws.com',
         'USER': 'admin',
-        'PASSWORD': '2DrljEXFcRkvnTuzW',
+        'PASSWORD': 'OHz14eRYMWnt5ZQUCQld',
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=InnoDB'
         }
