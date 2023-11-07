@@ -1,0 +1,157 @@
+{% if request.user.is_authenticated %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spazio Transportes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href={%static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href={%static "header.css"%}> 
+    <link rel="stylesheet" href={%static "geral.css"%}> 
+</head>
+
+<header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <nav class="menu">
+      <div class="head">
+        <div class="logo"><img src={%static "assets/favicon.ico"%}></div>
+        <button type="button" class="close-menu-btn"></button>
+      </div>
+      <ul>
+       <li class="dropdown">
+         <a href="/rotasadm">🛣️ ROTAS</a>
+         <i class="fa-solid fa-chevron-down"></i>
+         <ul class="sub-menu">
+           <li class="dropdown">
+             <a href="/empresas">🏢 EMPRESAS</a>
+             <i class="fa-solid fa-chevron-down"></i>
+             <ul class="sub-menu">
+               <li><a href="/addempresa"><span>🏢 CADASTRAR EMPRESA</span></a></li>
+             </ul>
+           </li>
+           <li><a href="/addrota"><span>📦 CADASTRAR SERVIÇO</span></a></li>
+           <li><a href="/view_urotas"><span>📍 ROTAS E CAMINHÕES</span></a></li>
+           <li><a href="/addcarro"><span>🚐 CADASTRAR VEÍCULO</span></a></li>
+           <li><a href="/cad_rota"><span>🛣️ LANÇAR ROTA</span></a></li>
+         </ul>
+       </li>
+        <li class="dropdown">
+          <a href="/abastecimentosadm">⛽ ABASTECIMENTOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_abastecimento"><span>⛽ LANÇAR ABASTECIMENTO</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/users">👷🏼 MOTORISTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_users"><span>👷🏼 CADASTRAR MOTORISTA</span></a></li>
+            <li><a href="/cad_nf"><span>🗃️ LANÇAR NOTA FISCAL</span></a></li>
+            <li><a href="/criar_perfil"><span>📱 CRIAR PERFIL</span></a></li>
+            <li><a href="/perfil"><span>📱 VER PERFIL</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/admin">📊 ADMINISTRADOR</a></li>
+        <li class="dropdown">
+          <a href="/recibos">🗃️ RECIBOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_recibos"><span>🗃️ LANÇAR RECIBO</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="header-right">
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+      <button type="button" class="open-menu-btn">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+ </header>
+
+<body class="body">
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1 id="h1"> ROTAS </h1>
+  </div>
+
+  <div class="container">
+    <table class="table-resp">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">ROTA</th>
+            <th scope="col">VALOR PAGO</th>
+            <th scope="col">VALOR RECEBIDO</th>
+            <th scope="col">AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rota in rotas %}
+          <tr>
+            <th><a href=''> #{{rota.id}}</a></th>
+            <th>{{rota.nome}}</th>
+            <td>R${{rota.vlr}}</td>
+            <td>R${{rota.receber_vlr}}</td>
+            <td>
+            {% if perms.admin.can_view_all %}
+               <a href="/editurota/{{rota.id}}" class="btn btn-outline-warning">📝<a/>
+               <a href="/deleteurota/{{rota.id}}" class="btn btn-outline-danger btnDel">🚫<a/>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+    </table>
+  </div> 
+ 
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+   <h1 id="h1"> VEICULOS </h2>
+  </div>
+ 
+  <div class="container">
+    <table class="table-resp">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">VEICULO</th>
+            <th scope="col">AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for carro in carros %}
+          <tr>
+            <th><a href=''> #{{carro.id}}</a></th>
+            <th>{{carro.nome}}</th>
+            <td>
+            {% if perms.admin.can_view_all %}
+               <a href="/editcarro/{{carro.id}}" class="btn btn-outline-warning">📝<a/>
+               <a href="/deletecarro/{{carro.id}}" class="btn btn-outline-danger btnDel">🚫<a/>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+    </table>
+  </div>
+
+  <div class="col-8 m-auto pt-3 pb-2 text-center">
+ <a href="/users" class="btn btn-info">Voltar</a>
+  </div>
+  {% load static %}
+   <script src="{% static 'javascript.js' %}"></script>
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}

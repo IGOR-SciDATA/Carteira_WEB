@@ -1,0 +1,337 @@
+{% if request.user.is_authenticated %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>Spazio Transportes </title>
+    <link rel="icon" type="image/x-icon" href={%static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href={%static "header.css"%}>
+    <link rel="stylesheet" href={%static "geral.css"%}>
+</head> 
+{% if perms.admin.can_view_all %}
+<header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <nav class="menu">
+      <div class="head">
+        <div class="logo"><img src={%static "assets/favicon.ico"%}></div>
+        <button type="button" class="close-menu-btn"></button>
+      </div>
+      <ul>
+        <li class="dropdown">
+          <a href="/rotasadm">🛣️ ROTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li class="dropdown">
+              <a href="/empresas">🏢 EMPRESAS</a>
+              <i class="fa-solid fa-chevron-down"></i>
+              <ul class="sub-menu">
+                <li><a href="/addempresa"><span>🏢 CADASTRAR EMPRESA</span></a></li>
+              </ul>
+            </li>
+            <li><a href="/addrota"><span>📦 CADASTRAR SERVIÇO</span></a></li>
+            <li><a href="/view_urotas"><span>📍 ROTAS E CAMINHÕES</span></a></li>
+            <li><a href="/addcarro"><span>🚐 CADASTRAR VEÍCULO</span></a></li>
+            <li><a href="/cad_rota"><span>🛣️ LANÇAR ROTA</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/abastecimentosadm">⛽ ABASTECIMENTOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_abastecimento"><span>⛽ LANÇAR ABASTECIMENTO</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/users">👷🏼 MOTORISTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_users"><span>👷🏼 CADASTRAR MOTORISTA</span></a></li>
+            <li><a href="/cad_nf"><span>🗃️ LANÇAR NOTA FISCAL</span></a></li>
+            <li><a href="/criar_perfil"><span>📱 CRIAR PERFIL</span></a></li>
+            <li><a href="/perfil"><span>📱 VER PERFIL</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/admin">📊 ADMINISTRADOR</a></li>
+        <li class="dropdown">
+          <a href="/recibos">🗃️ RECIBOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_recibos"><span>🗃️ LANÇAR RECIBO</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="header-right">
+      <button type="button" class="search-btn icon-btn" onclick="Mudarestado('minhaDiv')" ><i class="fa-solid fa-search"></i></button>
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+      <button type="button" class="open-menu-btn">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+    <link rel="stylesheet" href={%static "geral.css"%}>
+</head>
+</header>
+{%endif%}
+{%if perms.admin.can_view_all %}
+<style>
+  @media(max-width:500px){
+    #container-buttons{
+      margin-top: 30%;
+    }
+    .container-pesquisa{
+      margin-top: 30%;
+    }
+  }
+  @media(max-width:335px){
+    #container-buttons{
+      margin-top: 40%;
+    }
+    .container-pesquisa{
+      margin-top: 40%;
+    }
+  }  
+</style>
+<div class="container-pesquisa" id="minhaDiv" style="display:none">
+    <div class="col-5 m-auto pt-2 pb-2 text-center">
+        <form>
+           <label>Selecione um motorista:</label></br>
+             <select name="moto_field"> 
+              <option value="TODOS"> TODOS </option>
+              {% for bds in bd %} 
+              <option value="{{bds.id}}"> {{bds.username}} </option>
+              {%endfor%}
+             </select></br>
+     
+           <label>Selecione uma empresa:</label></br>
+             <select name="rota_empresa">
+              <option value="TODOS"> TODOS </option>  
+              {% for empresa in empresas %} 
+               <option value="{{empresa.nome}}"> {{empresa.nome}} </option>
+              {% endfor %}       
+             </select></br>
+     
+         <label>Data Inicial</label>
+         <input type="date" name="start_date" class="form-control">
+         <label>Data Final</label>
+         <input type="date" name="end_date" class="form-control">
+       
+         <div class="m-auto pt-2 pb-2"> 
+         <button type="submit" class="btn btn-success" id="btn-search" style="background-color:red; border-color:black;">PESQUISAR</button>
+       </form>
+       </div>
+      </div>
+</div>
+{%else%}
+<style>
+  h1{
+    margin-top: 10%;
+  }
+  @media(max-width:700px){
+    h1{
+      margin-top: 30%;
+    } 
+    .container-pesquisa{
+      margin-top: 25%;
+    }
+  }
+  @media(max-width:991px){
+    h1{
+      margin-top: 20%;
+    } 
+  }
+  @media(max-width:400px){
+    h1{
+      margin-top: 30%;
+    }
+     .container-pesquisa{
+      margin-top: 35%;
+    }
+    #btn-search{
+    }
+  }
+</style>
+<div class="container-pesquisa" id="minhaDiv" style="display:none">
+  <div class="col-5 m-auto pt-2 pb-2 text-center">
+      <form>
+   
+       <label>Data Inicial</label>
+       <input type="date" name="start_date" class="form-control">
+       <label>Data Final</label>
+       <input type="date" name="end_date" class="form-control">
+     
+       <div class="m-auto pt-2 pb-2"> 
+       <button type="submit" class="btn btn-success" id="btn-search" style="background-color:red; border-color:black;">PESQUISAR</button>
+       </div>
+      </form>
+     </div>
+    </div>
+</div>
+{%endif%}
+
+{%if perms.admin.can_view_all %}
+<div id="container-buttons">
+    <div class="col-10 m-auto pt-6 pb-2">
+        <button id="btn_select" class="btn btn-primary">☑️ SELECIONAR / DESMARCAR  ⚪</button>
+      </div>
+      
+      <div class="col-10 m-auto pt-6 pb-2">
+       <form name="form2" id="form2" action="/payrota/" method="post">
+        {%csrf_token%}
+        <button type="submit" name="btn_update" class="btn btn-warning">💰 PAGAR / RECEBER  💲</button>
+      </div>
+</div>
+{%else%}
+<header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <div class="header-right">
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+      <button type="button" class="search-btn icon-btn" onclick="Mudarestado('minhaDiv')" ><i class="fa-solid fa-search"></i></button>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+</header>
+{%endif%}
+<h1>ROTAS</h1>
+<body class="body">
+    <div class="container">
+        <table class="table-resp">
+            <thead>
+                <tr>
+                {%if perms.admin.can_view_all%}
+                 <th>ID</th>
+                 <th>DATA</th>
+                 <th>MOTORISTA</th>
+                 <th>ROTAS</th>
+                 <th>EMPRESAS</th>
+                 <th>VALOR A PAGAR</th>
+                 <th>VALOR A RECEBER</th>
+                 <th>STATUS</th>
+                 <th>AÇÕES</th>
+                {%else%}
+                 <th>ID</th>
+                 <th>DATA</th>
+                 <th>MOTORISTA</th>
+                 <th>ROTAS</th>
+                 <th>EMPRESAS</th>
+                 <th>VALOR A RECEBER</th>
+                 <th>STATUS</th>
+                {%endif%}
+                </tr>
+            </thead>
+            {%if perms.admin.can_view_all %}
+            <tbody>
+              {% for dbs in db %}
+                <tr>
+                  <td data-label="ID"><input type="checkbox" name="id_rota" class="check" value="{{dbs.id}}"{%if chk %}checked{%endif%}>{{dbs.id}}</td>
+                  <td data-label="DATA">{{dbs.dia}}</td>
+                  <td data-label="MOTORISTA"><a href="">{{dbs.user}}</a></td>
+                  <td data-label="ROTAS">{{dbs.serv}}</td>
+                  <td data-label="EMPRESAS">{{dbs.empresa}}</td>
+                  <td data-label="VALOR A PAGAR">💲{{dbs.vlr}}</td>
+                  <td data-label="VALOR A RECEBER">💲{{dbs.receber_vlr}}</td>
+                 {% if dbs.status == 'PAGO' %}
+                  <td data-label="STATUS" style="font-size:19px; color: white;" bgcolor="GREEN">PAGO</td>
+                 {%endif%} 
+                 {% if dbs.status == 'RECEBIDO' %}
+                  <td data-label="STATUS" style="font-size:19px; color: white;" bgcolor="BLUE">RECEBIDO</td>
+                 {%endif%}             
+                 {%if dbs.status == 'NÃO PAGO'%}
+                 <td data-label="STATUS" style="font-size:19px;  color: white;" bgcolor="RED">NÃO PAGO</td>
+                 {%endif%}
+                 {%if dbs.status == 'not'%}
+                 <td data-label="STATUS" style="font-size:19px;  color: white;" bgcolor="RED">NÃO PAGO</td>
+                 {%endif%}
+                  <td>
+                     <a href="/edit/{{dbs.id}}" class="btn btn-info">📝</a>
+                     <a href="/delete/{{dbs.id}}" class="btn btn-danger btnDel">🚫</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+              {%else%}
+              <tbody>
+                {% for dbs in db %}
+                  <tr>
+                    <td data-label="ID"><input type="checkbox" name="id_rota" class="check" value="{{dbs.id}}"{%if chk %}checked{%endif%}>{{dbs.id}}</td>
+                    <td data-label="DATA">{{dbs.dia}}</td>
+                    <td data-label="MOTORISTA">{{dbs.user}}</td>
+                    <td data-label="ROTAS">{{dbs.serv}}</td>
+                    <td data-label="EMPRESAS">{{dbs.empresa}}</td>
+                    <td data-label="VALOR A RECEBER">💲{{dbs.vlr}}</td>
+                   {% if dbs.status == 'PAGO' %}
+                    <td data-label="STATUS" style="font-size:19px; color: white;" bgcolor="GREEN">PAGO</td>
+                   {% elif dbs.status == 'RECEBIDO' %}
+                   <td data-label="STATUS" style="font-size:19px;  color: white;" bgcolor="GREEN">PAGO</td>
+                   {%else%}
+                   <td data-label="STATUS" style="font-size:19px;  color: white;" bgcolor="RED">NÃO PAGO</td>
+                   {%endif%}
+                  </tr>
+                {% endfor %}
+              </tbody>
+              {%endif%}
+           </table>
+     </div>
+     <div class="text-center">
+       {%if db.has_previous%}
+         <a href="{%url 'rotadm' %}?page={{db.previous_page_number}}">Voltar</a>
+       {%endif%}
+       {%if db.has_next%}
+       <a href="{%url 'rotadm' %}?page={{db.next_page_number}}">Próximo</a>
+       {%endif%}
+     </div>
+     <div class="col-8 m-auto pt-3 pb-2 text-center">
+        <a href="/inicio" class="btn btn-primary" id="btn-back">Voltar</a>
+        <a href="/cad_rota" class="btn btn-success" id="btn-add">Adicionar</a>
+      </div>
+      <script>
+        const menu = document.querySelector('.menu');
+        const openMenuBtn = document.querySelector('.open-menu-btn');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');         
+  
+        [openMenuBtn, closeMenuBtn].forEach((btn) => {
+          btn.addEventListener('click', () => {
+           menu.classList.toggle('open');
+           menu.style.transition = 'transform 0.5s ease';
+          });
+         });
+
+         menu.addEventListener('transitionend', function() {
+           this.removeAttribute('style');
+         });
+        menu.querySelectorAll('.dropdown > i').forEach((arrow) => {
+            arrow.addEventListener('click', function(){
+              this.closest('.dropdown').classList.toggle('active');
+            });
+        });
+
+        function Mudarestado(el) {
+          var display = document.getElementById(el).style.display;
+          if (display == "none")
+            document.getElementById(el).style.display = 'block';
+          else
+            document.getElementById(el).style.display = 'none';
+        }
+      </script>
+      <script src="{% static 'javascript.js' %}"></script> 
+</body> 
+</html>
+{%else%}
+ACESSO RESTRITO!
+{%endif%}

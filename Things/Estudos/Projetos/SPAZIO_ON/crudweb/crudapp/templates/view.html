@@ -1,0 +1,61 @@
+{% if request.user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPAZIO</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+{%if bd %}
+<div class="col-5 m-auto pt-2 pb-2 text-center">
+  <form>
+   <label>Data Inicial</label>
+   <input type="date" name="start_date" class="form-control">
+   <label>Data Final</label>
+   <input type="date" name="end_date" class="form-control">
+ <div class="col-5 m-auto pt-2 pb-2"> 
+   <button type="submit" class="btn btn-success m-auto" style="background-color:red; border-color:black;">PESQUISAR</button>
+ </form>
+ </div>
+ </div>
+ <hr style="background:black">
+{%endif%}
+
+<body style="background-color:#f8ff30">
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1>VISUALIZAÇÃO FOTO</h1>
+    {% if rec %}
+    <h2>Tipo: {{rec.tipo}}</h2>
+  </div>
+
+  <div class="col-8 m-auto pt-4 pb-2 text-center">
+  <img style="width: 100%" src="{{rec.rcb.url}}">
+  {% endif %}
+  
+  {%if bd%}
+  {% for bds in bd %}
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+  <h2>Data: {{bds.dia}}</h2><h3>Modelo: {{bds.carro}}</h3><h4>Motorista: {{bds.moto}}</h4>
+  <img style="width: 50%" src="{{bds.img.url}}">
+  <img style="width: 50%" src="{{bds.km.url}}">
+  </div>
+  <hr style="background:black">
+  {% endfor %}
+  {%endif%}
+  {% if cd %}
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+  <img style="width: 70%" src="{{cd.img.url}}">
+  <img style="width: 70%" src="{{cd.km.url}}">
+  {% endif %}
+  </div>
+  <div class="col-8 m-auto pt-3 pb-2 text-center">
+    <a href="{%if rec%}/recibos{%endif%}{%if cd%}/abastecimentosadm{%endif%}" class="btn btn-info">Voltar</a>
+  </div>
+
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}

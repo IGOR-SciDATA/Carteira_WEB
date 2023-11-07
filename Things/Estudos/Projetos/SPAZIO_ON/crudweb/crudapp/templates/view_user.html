@@ -1,0 +1,58 @@
+{% if request.user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPAZIO</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href={%static 'geral.css' %}>
+    <link rel="stylesheet" href={%static 'header.css' %}>
+</head>
+
+<body class="body">
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1>VISUALIZAÇÃO USUARIO</h1>
+  </div>
+  <hr style="background:black">
+
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+{% for valor in valores%}
+<font color="red" style="font-size:30px; border-color:white;"> {{valor.nome}} = PAGA {{valor.vlr}}R$ / </font>
+<font color="red" style="font-size:30px; border-color:white;"> RECEBE {{valor.receber_vlr}}R$</font>
+</br>
+{%endfor%}
+</div>
+</br>
+<div class="col-8 m-auto pt-6 pb-2">
+    <label> Modelos Permitidos: </label>
+    <select name="Ucarro" id="rstatus">
+      {%for nome in nomes%}
+      <option value="{{nome}}"> {{nome}} </option>
+      {%endfor%}
+    </select>
+<label> Rotas Permitidas: </label>
+<select name="Urota" id="Urota">
+  {%for rota in rotas%}
+  <option value="{{rota}}"> {{rota}} </option>
+  {%endfor%}
+</select>  
+
+  {% for modelo in modelos %}
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+  <img style="width: 100%" src="{{modelo.photo.url}}">
+  </div>
+  <hr style="background:blue">
+  {% endfor %}
+</div>
+
+  <div class="col-8 m-auto pt-3 pb-2 text-center">
+    <a href="/users" class="btn btn-info">Voltar</a>
+  </div>
+
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}

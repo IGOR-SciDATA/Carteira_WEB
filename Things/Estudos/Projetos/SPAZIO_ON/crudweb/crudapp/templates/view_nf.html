@@ -1,0 +1,217 @@
+{% if request.user.is_authenticated %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>Spazio Transportes </title>
+    <link rel="icon" type="image/x-icon" href={%static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href={%static "geral.css"%}>
+    <link rel="stylesheet" href={%static "header.css"%}>
+    
+</head>
+{% if perms.admin.can_view_all %}
+ <header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <nav class="menu">
+      <div class="head">
+        <div class="logo"><img src={%static "assets/favicon.ico"%}></div>
+        <button type="button" class="close-menu-btn"></button>
+      </div>
+      <ul>
+        <li class="dropdown">
+          <a href="/rotasadm">🛣️ ROTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li class="dropdown">
+              <a href="/empresas">🏢 EMPRESAS</a>
+              <i class="fa-solid fa-chevron-down"></i>
+              <ul class="sub-menu">
+                <li><a href="/addempresa"><span>🏢 CADASTRAR EMPRESA</span></a></li>
+              </ul>
+            </li>
+            <li><a href="/addrota"><span>📦 CADASTRAR SERVIÇO</span></a></li>
+            <li><a href="/view_urotas"><span>📍 ROTAS E CAMINHÕES</span></a></li>
+            <li><a href="/addcarro"><span>🚐 CADASTRAR VEÍCULO</span></a></li>
+            <li><a href="/cad_rota"><span>🛣️ LANÇAR ROTA</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/abastecimentosadm">⛽ ABASTECIMENTOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_abastecimento"><span>⛽ LANÇAR ABASTECIMENTO</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/users">👷🏼 MOTORISTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_users"><span>👷🏼 CADASTRAR MOTORISTA</span></a></li>
+            <li><a href="/cad_nf"><span>🗃️ LANÇAR NOTA FISCAL</span></a></li>
+            <li><a href="/criar_perfil"><span>📱 CRIAR PERFIL</span></a></li>
+            <li><a href="/perfil"><span>📱 VER PERFIL</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/admin">📊 ADMINISTRADOR</a></li>
+        <li class="dropdown">
+          <a href="/recibos">🗃️ RECIBOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_recibos"><span>🗃️ LANÇAR RECIBO</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="header-right">
+      <button type="button" class="search-btn icon-btn" onclick="Mudarestado('minhaDiv')" ><i class="fa-solid fa-search"></i></button>
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+      <button type="button" class="open-menu-btn">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+</header>
+{% else %}
+<header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <div class="header-right">
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+</header>
+<style>
+</style>
+{% endif %}
+<div class="container-search" id="minhaDiv" style="display:none">
+    <div class="col-5 m-auto pt-2 pb-2 text-center">
+        <form>
+           <label>Selecione um motorista:</label></br>
+             <select name="moto_field"> 
+              {% for users in us %} 
+              <option value={{users.username}}> {{users.username}} </option>
+              {%endfor%}
+             </select></br>
+
+         <label>Data Inicial</label>
+         <input type="date" name="start_date" class="form-control">
+         <label>Data Final</label>
+         <input type="date" name="end_date" class="form-control">
+       
+         <div class="col-5 m-auto pt-2 pb-2"> 
+         <button type="submit" class="btn btn-success" id="btn-search" style="background-color:red; border-color:black;">PESQUISAR</button>
+       </form>
+       </div>
+      </div>
+</div>
+
+<body class="body">
+  <div class="col-8 m-auto pt-3 pb-2 text-center">
+    <h1 id="h1">NOTAS FISCAIS</h1>
+    </div>
+    <div class="container">
+        <table class="table-resp">
+          {% if perms.admin.can_view_all %}
+            <thead>
+                <tr>
+                 <th>ID</th>
+                 <th>DATA</th>
+                 <th>MOTORISTA</th>
+                 <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for nf in nfs %}
+                <tr>
+                  <td data-label="ID"><input type="checkbox" name="id_nf" class="check" value="{{nf.id}}"{%if chk %}checked{%endif%}>{{nf.id}}</td>
+                  <td data-label="DATA">{{nf.data}}</td>
+                  <td data-label="MOTORISTA">{{nf.moto}}</td>
+                  <td>
+                      <a href="{{nf.pdf.url}}" class="btn btn-light" download>⬇️<a/>
+                      <a href="/editnf/{{nf.id}}" class="btn btn-warning">📝<a/>
+                      <a href="/deletenf/{{nf.id}}" class="btn btn-danger btnDel">🚫<a/>
+                  </td>
+                </tr>
+            </tbody>
+              {% endfor %}
+          {% else %}
+          <thead>
+            <tr>
+             <th>DATA</th>
+             <th>MOTORISTA</th>
+             <th>AÇÕES</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nf in notas %}
+             <tr>
+               <td data-label="DATA">{{nf.data}}</td>
+               <td data-label="MOTORISTA">{{nf.moto}}</td>
+               <td>
+                  <a href="{{nf.pdf.url}}" class="btn btn-light" download>⬇️<a/>
+               </td>
+            </tr>
+          </tbody>
+            {% endfor %}
+          {% endif %}
+           </table>
+     </div>
+     <div class="col-8 m-auto pt-3 pb-2 text-center">
+      {% if perms.admin.can_view_all %}
+        <a href="/recibos" class="btn btn-primary" id="btn-back">Voltar</a>
+        <a href="/cad_nfadm" class="btn btn-success" id="btn-add">Adicionar</a>
+      {% else %}  
+        <a href="/inicio" class="btn btn-primary" id="btn-back">Voltar</a>
+      {% endif %}
+      </div> 
+</body> 
+<script>
+  const menu = document.querySelector('.menu');
+  const openMenuBtn = document.querySelector('.open-menu-btn');
+  const closeMenuBtn = document.querySelector('.close-menu-btn');         
+
+  [openMenuBtn, closeMenuBtn].forEach((btn) => {
+    btn.addEventListener('click', () => {
+     menu.classList.toggle('open');
+     menu.style.transition = 'transform 0.5s ease';
+    });
+   });
+
+   menu.addEventListener('transitionend', function() {
+     this.removeAttribute('style');
+   });
+  menu.querySelectorAll('.dropdown > i').forEach((arrow) => {
+      arrow.addEventListener('click', function(){
+        this.closest('.dropdown').classList.toggle('active');
+      });
+  });
+
+  function Mudarestado(el) {
+    var display = document.getElementById(el).style.display;
+    if (display == "none")
+      document.getElementById(el).style.display = 'block';
+    else
+      document.getElementById(el).style.display = 'none';
+  }
+</script>
+<script src="{% static 'javascript.js' %}"></script>
+</html>
+{%else%}
+ACESSO RESTRITO!
+{%endif%}

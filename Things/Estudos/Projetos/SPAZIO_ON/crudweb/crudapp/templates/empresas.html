@@ -1,0 +1,143 @@
+{% if request.user.is_authenticated %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spazio Transportes</title>
+    <link rel="icon" type="image/x-icon" href={%static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href={%static "geral.css"%}>
+    <link rel="stylesheet" href={%static "header.css"%}>
+</head>
+
+<header class="header">
+    <div class="container-menu">
+      <div class="logo">
+        <img src="{%static "assets/favicon.ico"%}">
+        <a>SPAZIO</a>
+      </div>
+      <nav class="menu">
+        <div class="head">
+          <div class="logo"><img src={%static "assets/favicon.ico"%}></div>
+          <button type="button" class="close-menu-btn"></button>
+        </div>
+        <ul>
+          <li class="dropdown">
+            <a href="/rotasadm">🛣️ ROTAS</a>
+            <i class="fa-solid fa-chevron-down"></i>
+            <ul class="sub-menu">
+              <li class="dropdown">
+                <a href="/empresas">🏢 EMPRESAS</a>
+                <i class="fa-solid fa-chevron-down"></i>
+                <ul class="sub-menu">
+                  <li><a href="/addempresa"><span>🏢 CADASTRAR EMPRESA</span></a></li>
+                </ul>
+              </li>
+              <li><a href="/addrota"><span>📦 CADASTRAR SERVIÇO</span></a></li>
+              <li><a href="/view_urotas"><span>📍 ROTAS E CAMINHÕES</span></a></li>
+              <li><a href="/addcarro"><span>🚐 CADASTRAR VEÍCULO</span></a></li>
+              <li><a href="/cad_rota"><span>🛣️ LANÇAR ROTA</span></a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="/abastecimentosadm">⛽ ABASTECIMENTOS</a>
+            <i class="fa-solid fa-chevron-down"></i>
+            <ul class="sub-menu">
+              <li><a href="/cad_abastecimento"><span>⛽ LANÇAR ABASTECIMENTO</span></a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="/users">👷🏼 MOTORISTAS</a>
+            <i class="fa-solid fa-chevron-down"></i>
+            <ul class="sub-menu">
+              <li><a href="/cad_users"><span>👷🏼 CADASTRAR MOTORISTA</span></a></li>
+              <li><a href="/cad_nf"><span>🗃️ LANÇAR NOTA FISCAL</span></a></li>
+              <li><a href="/cad_nf"><span>🗃️ LANÇAR HOLERITE</span></a></li>
+              <li><a href="/criar_perfil"><span>📱 CRIAR PERFIL</span></a></li>
+              <li><a href="/perfil"><span>📱 VER PERFIL</span></a></li>
+            </ul>
+          </li>
+          <li><a href="/admin">📊 ADMINISTRADOR</a></li>
+          <li class="dropdown">
+            <a href="/recibos">🗃️ RECIBOS</a>
+            <i class="fa-solid fa-chevron-down"></i>
+            <ul class="sub-menu">
+              <li><a href="/cad_recibos"><span>🗃️ LANÇAR RECIBO</span></a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <div class="header-right">
+        <button type="button" class="search-btn icon-btn" onclick="Mudarestado('minhaDiv')" ><i class="fa-solid fa-search"></i></button>
+        <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+        <button type="button" class="open-menu-btn">
+          <span class="line line-1"></span>
+          <span class="line line-2"></span>
+          <span class="line line-3"></span>
+        </button>
+      </div>
+    </div>
+    <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+  </header>
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1 id="h1">EMPRESAS</h1>
+  </div>
+ <body class="body">
+
+    <div class="container">
+        <table class="table-resp">
+            <thead>
+                <tr>
+                 <th>ID</th>
+                 <th>NOME</th>
+                 <th>ENDEREÇO</th>
+                 <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for empresa in empresas %}
+                <tr>
+                  <td data-label="ID"><input type="checkbox" name="id_empresa" class="check" value="{{empresa.id}}"{%if chk %}checked{%endif%}>{{empresa.id}}</td>
+                  <td data-label="NOME">{{empresa.nome}}</td>
+                  <td data-label="ENDEREÇO">{{empresa.endereco}}</td>
+                  <td>
+                     <a href="/editempresa/{{empresa.id}}" class="btn btn-info">📝</a>
+                     <a href="/deleteempresa/{{empresa.id}}" class="btn btn-danger btnDel">🚫</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+
+  <div class="col-8 m-auto pt-4 pb-2 text-center">
+  </div>
+  <script>
+    const menu = document.querySelector('.menu');
+    const openMenuBtn = document.querySelector('.open-menu-btn');
+    const closeMenuBtn = document.querySelector('.close-menu-btn');         
+
+    [openMenuBtn, closeMenuBtn].forEach((btn) => {
+      btn.addEventListener('click', () => {
+       menu.classList.toggle('open');
+       menu.style.transition = 'transform 0.5s ease';
+      });
+     });
+
+     menu.addEventListener('transitionend', function() {
+       this.removeAttribute('style');
+     });
+    menu.querySelectorAll('.dropdown > i').forEach((arrow) => {
+        arrow.addEventListener('click', function(){
+          this.closest('.dropdown').classList.toggle('active');
+        });
+    });
+  </script>
+  <script src="{% static "javascript.js" %}"></script>
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}

@@ -1,0 +1,54 @@
+{% if request.user.is_authenticated %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spazio Transportes</title>
+    <link rel="icon" type="image/x-icon" href={%static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href={%static "header.css" %}>
+</head>
+
+<body class="body">
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1>MEU PERFIL</h1>
+  </div>
+  <hr style="background:black">
+
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+    <font color="red" style="font-size:20px; border-color:white;">FOTO DE PERFIL</font></br>    
+    <img style="width: 50%" src="{{dados.foto.url}}">
+</div>
+</br>
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+  <font color="red" style="font-size:20px; border-color:white;"> SELFIE COM DOC </font></br>
+  <img style="width: 20%" src="{{dados.foto_selfie.url}}">
+</div>
+<div class="col-8 m-auto pt-2 pb-2 text-center">
+<font color="red" style="font-size:20px; border-color:white;"> DADOS </font>
+</br>
+<font color="blue" style="font-size:20px; border-color:white;"> Nome Completo: {{db.nome}}</font></br>
+<font color="blue" style="font-size:20px; border-color:white;"> CPF: {{db.cpf}}</font></br>
+<font color="blue" style="font-size:20px; border-color:white;"> RG: {{db.rg}}</font></br>
+<font color="blue" style="font-size:20px; border-color:white;"> ENDEREÇO: {{db.end}}</font></br>
+</br>
+</div>
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+  <font color="red" style="font-size:20px; border-color:white;"> CNH </font></br>
+  <a class="btn btn-light" href="{{dados.cnh.url}}"> BAIXAR ⬇️ </a>
+  </div>
+  <hr style="background:blue">
+</div>
+
+  <div class="col-8 m-auto pt-3 pb-2 text-center">
+    <a href="{%if back %}/users{%else%}/inicio{%endif%}" class="btn btn-info">Voltar</a> <a href="{%if perms.admin.can_view_all %}/edit_perfil{%else%}/edit_perfil_moto{%endif%}" class="btn btn-primary btn-md" style="background-color:red; border-color:black;">Editar Perfil</a>
+  </div>
+
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}

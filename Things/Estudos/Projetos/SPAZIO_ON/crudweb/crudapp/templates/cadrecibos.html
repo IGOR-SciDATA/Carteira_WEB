@@ -1,0 +1,195 @@
+{% if request.user.is_authenticated %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="PT-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spazio Transportes</title>
+    <link rel="icon" type="image/x-icon" href={% static "assets/favicon.ico" %}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href={% static "header.css"%}>
+</head>
+
+<header class="header">
+  <div class="container-menu">
+    <div class="logo">
+      <img src="{%static "assets/favicon.ico"%}">
+      <a>SPAZIO</a>
+    </div>
+    <nav class="menu">
+      <div class="head">
+        <div class="logo"><img src={%static "assets/favicon.ico"%}></div>
+        <button type="button" class="close-menu-btn"></button>
+      </div>
+      <ul>
+       <li class="dropdown">
+         <a href="/rotasadm">🛣️ ROTAS</a>
+         <i class="fa-solid fa-chevron-down"></i>
+         <ul class="sub-menu">
+           <li class="dropdown">
+             <a href="/empresas">🏢 EMPRESAS</a>
+             <i class="fa-solid fa-chevron-down"></i>
+             <ul class="sub-menu">
+               <li><a href="/addempresa"><span>🏢 CADASTRAR EMPRESA</span></a></li>
+             </ul>
+           </li>
+           <li><a href="/addrota"><span>📦 CADASTRAR SERVIÇO</span></a></li>
+           <li><a href="/view_urotas"><span>📍 ROTAS E CAMINHÕES</span></a></li>
+           <li><a href="/addcarro"><span>🚐 CADASTRAR VEÍCULO</span></a></li>
+           <li><a href="/cad_rota"><span>🛣️ LANÇAR ROTA</span></a></li>
+         </ul>
+       </li>
+        <li class="dropdown">
+          <a href="/abastecimentosadm">⛽ ABASTECIMENTOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_abastecimento"><span>⛽ LANÇAR ABASTECIMENTO</span></a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/users">👷🏼 MOTORISTAS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_users"><span>👷🏼 CADASTRAR MOTORISTA</span></a></li>
+            <li><a href="/cad_nf"><span>🗃️ LANÇAR NOTA FISCAL</span></a></li>
+            <li><a href="/criar_perfil"><span>📱 CRIAR PERFIL</span></a></li>
+            <li><a href="/perfil"><span>📱 VER PERFIL</span></a></li>
+          </ul>
+        </li>
+        <li><a href="/admin">📊 ADMINISTRADOR</a></li>
+        <li class="dropdown">
+          <a href="/recibos">🗃️ RECIBOS</a>
+          <i class="fa-solid fa-chevron-down"></i>
+          <ul class="sub-menu">
+            <li><a href="/cad_recibos"><span>🗃️ LANÇAR RECIBO</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="header-right">
+      <a class="home-btn icon-btn" href="/inicio"><i class="fa-solid fa-house"></i></a>
+      <button type="button" class="open-menu-btn">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <!--<a href="/inicio"><h1>ROTAS</h1></a>-->
+ </header>
+
+<body class="body">
+  <div class="col-8 m-auto pt-2 pb-2 text-center">
+    <h1 id="h1">CADASTRO DE RECIBOS</h1>
+  </div>
+
+  <div class="col-8 m-auto pt-4 pb-2 text-center">
+    <form name="form" id="form" action="{%if db %}/save/{{db.id}}/{%endif%}{%if cad%}/create_rcb/{% endif %}{%if ids%}/create_r/{%endif%}{%if pks%}/create_rw/{%endif%}" method="post" enctype="multipart/form-data">
+      <div id="result"></div>
+        {% csrf_token %}
+        
+        <label>Selecione um motorista!</label>
+        <div class="form-group">
+        <select name="motofield" id="motofield">
+           
+          {% if db %}
+             <option selected>{{db.moto}}</option>
+          {% endif %}
+           {% for bds in bd %} 
+             <option value={{bds.username}}> {{bds.username}} </option>
+           {% endfor %}       
+        </select>
+      </div>
+
+        <label for="rday">Data:</label>
+        {% if db %}
+        <input type="text" id="rday" name="rday" value={{db.dia}}>
+        {% else %}
+        <input type="text" id="rday" name="rday" value={{day}}>
+        {% endif %}
+        <br>
+       
+        <label for="rdesc">Descrição Pagamento:</label>
+        {% if db %}
+        <input type="text" id="rdesc" name="rdesc" value={{db.desc_pag}}>
+        {% else %}
+        <input type="text" id="rdesc" name="rdesc" value="">
+        {% endif %}
+        <br>
+        
+        {% if ids %}
+        <label for="rids">Abastecimentos a serem pagos:</label>
+        <input type="text" id="rids" name="rids" value="{{ids}}">
+        {% endif %}
+        
+        {% if pks %}
+        <label for="rids">Rotas:</label>
+        <input type="text" id="rotaids" name="rotaids" value="{{pks}}">
+        {% endif %}
+
+        <div class="form-group mt-4 text-center"> 
+        <label for="stts">Status:</label>
+        <select name="stts" id="stts">
+          {% if db %}
+            <option selected>{{db.status}}</option>
+          {% endif %}
+            <option value="PAGO">PAGO</option>
+            <option value="RECEBIDO">RECEBIDO</option>
+          </select>
+       
+        <label for="rtipo">Tipo:</label>
+        <select name="rtipo" id="rtipo">
+          {% if db %}
+          <option selected>{{db.tipo}}</option>
+          {% endif %}
+            <option value="ROTA">ROTA</option>
+            <option value="ABASTECIMENTO">ABASTECIMENTO</option>
+        </select>
+        </div>
+        {% if db %}
+        <div class="form-group mt-4 text-center">Foto: {{form.rcb}}</div>
+        {% else %}
+        <div class="form-group mt-4 text-center">Foto: {{form.rcb}}</div>
+        {% endif %} 
+        <button class="btn btn-success" type="submit">Concluir</button> <a href="{%if cad%}/recibos{%endif%}{%if ids%}/abastecimentosadm{%endif%}{%if pks%}/rotasadm{%endif%}{%if rcb%}/recibos{%endif%}" class="btn btn-info">Voltar</a>
+    </form>
+  </div>
+
+  <script>
+    const menu = document.querySelector('.menu');
+    const openMenuBtn = document.querySelector('.open-menu-btn');
+    const closeMenuBtn = document.querySelector('.close-menu-btn');         
+  
+    [openMenuBtn, closeMenuBtn].forEach((btn) => {
+      btn.addEventListener('click', () => {
+       menu.classList.toggle('open');
+       menu.style.transition = 'transform 0.5s ease';
+      });
+     });
+  
+     menu.addEventListener('transitionend', function() {
+       this.removeAttribute('style');
+     });
+    menu.querySelectorAll('.dropdown > i').forEach((arrow) => {
+        arrow.addEventListener('click', function(){
+          this.closest('.dropdown').classList.toggle('active');
+        });
+    });
+  
+    function Mudarestado(el) {
+      var display = document.getElementById(el).style.display;
+      if (display == "none")
+        document.getElementById(el).style.display = 'block';
+      else
+        document.getElementById(el).style.display = 'none';
+    }
+  </script>
+  <script src="{%static 'javascript.js'%}"></script>
+</body>
+</html>
+{% else %}
+ACESSO RESTRITO!
+{% endif %}
